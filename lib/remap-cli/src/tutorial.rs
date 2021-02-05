@@ -16,7 +16,7 @@ pub fn tutorial() -> Result<(), Error> {
     let mut compiler_state = state::Compiler::default();
     let mut rt = Runtime::new(state::Program::default());
     let mut rl = Editor::<Repl>::new();
-    rl.set_helper(Some(Repl::new()));
+    rl.set_helper(Some(Repl::new("> ")));
 
     let mut tutorials = tutorial_list();
 

@@ -40,11 +40,11 @@ pub struct Repl {
 }
 
 impl Repl {
-    pub fn new() -> Self {
+    pub fn new(prompt: &str) -> Self {
         Self {
             highlighter: MatchingBracketHighlighter::new(),
             hinter: HistoryHinter {},
-            colored_prompt: "$ ".to_owned(),
+            colored_prompt: prompt.to_owned(),
             validator: MatchingBracketValidator::new(),
         }
     }
