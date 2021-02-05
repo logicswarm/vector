@@ -27,6 +27,9 @@ pub enum Error {
     #[error("json error")]
     Json(#[from] serde_json::Error),
 
+    #[error("toml error: {0}")]
+    Toml(#[from] toml::de::Error),
+
     #[cfg(not(feature = "repl"))]
     #[error("repl feature disabled, program input required")]
     ReplFeature,
@@ -110,31 +113,4 @@ impl Validator for Repl {
     fn validate_while_typing(&self) -> bool {
         self.validator.validate_while_typing()
     }
-}
-
-#[macro_export]
-macro_rules! array {
-    () => ({
-        let vec: Vec<remap::Value> = Vec::new();
-        remap::Value::from(vec)
-    });
-    ($($v:expr),+ $(,)?) => ({
-        let vec: Vec<remap::Value> = vec![$($v.into()),+];
-        remap::Value::from(vec)
-    })
-}
-
-#[macro_export]
-macro_rules! map {
-    () => ({
-        let map = std::collections::BTreeMap::<String, Value>::new();
-        remap::Value::Map(map)
-    });
-    ($($k:tt: $v:expr),+ $(,)?) => ({
-        let map: std::collections::BTreeMap<String, Value> = vec![$(($k.into(), $v.into())),+]
-            .into_iter()
-            .collect::<std::collections::BTreeMap<_, _>>();
-
-        remap::Value::Map(map)
-    });
 }
