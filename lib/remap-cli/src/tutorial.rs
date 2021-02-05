@@ -6,6 +6,8 @@ use serde::Deserialize;
 use std::fs::File;
 use std::io::Read;
 
+const TUTORIALS_TOML_FILE: &str = "./tutorials.toml";
+
 #[derive(Deserialize)]
 struct Tutorial {
     number: String, // Making this a string allows for 1.1, 2.5, etc.
@@ -18,16 +20,6 @@ struct Tutorial {
 #[derive(Deserialize)]
 struct Tutorials {
     tutorials: Vec<Tutorial>,
-}
-
-fn load_tutorials_from_json() -> Result<Tutorials, Error> {
-    let mut buf = String::new();
-    let _ = File::open("./tutorials.toml")?.read_to_string(&mut buf)?;
-
-    match toml::from_str(&buf) {
-        Ok(tuts) => Ok(tuts),
-        Err(err) => Err(Error::Toml(err))
-    }
 }
 
 pub fn tutorial() -> Result<(), Error> {
@@ -122,6 +114,16 @@ fn print_tutorial_help_text(index: usize, tutorials: &[Tutorial]) {
         "Tutorial {}: {}\n\n{}\nInitial event object:\n{}\n",
         tut.number, tut.title, tut.help_text, tut.initial_event
     );
+}
+
+fn load_tutorials_from_json() -> Result<Tutorials, Error> {
+    let mut buf = String::new();
+    let _ = File::open(TUTORIALS_TOML_FILE)?.read_to_string(&mut buf)?;
+
+    match toml::from_str(&buf) {
+        Ok(tuts) => Ok(tuts),
+        Err(err) => Err(Error::Toml(err))
+    }
 }
 
 // This function reworks the resolve function in repl.rs to return a Result rather than a String. If the Result is
